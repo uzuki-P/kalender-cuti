@@ -11,6 +11,10 @@ import { planYear } from "@/lib/breaks"
 import { useCutiIsLeave } from "@/lib/leave-policy"
 import { yearView, type Bridge } from "@/lib/calendar"
 import { useCalendarSelection } from "@/lib/calendar-selection"
+import { ArrowUpRight, GitHub } from "@/components/icons"
+
+const REPO_URL = "https://github.com/uzuki-P/kalender-cuti"
+const PORTFOLIO_URL = "https://uzuki-p.github.io/"
 
 /*
  * Kalender Cuti. Two meanings carry the page: red is a day off (each break
@@ -93,6 +97,19 @@ export function App({ year }: { year: number }) {
           </a>
           . Cuti bersama dan saran cuti mengikuti kebijakan tempat kerjamu.
         </p>
+        <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3 text-[15px]">
+          <p>
+            Dibuat oleh{" "}
+            <a href={PORTFOLIO_URL} className="inline-flex items-center gap-0.5 rounded-sm font-bold text-ink underline decoration-merah decoration-2 underline-offset-4 hover:decoration-4 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ink">
+              uzuki-P
+              <ArrowUpRight />
+            </a>
+          </p>
+          <a href={REPO_URL} className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-line px-4 font-bold text-ink transition-colors hover:border-ink focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ink">
+            <GitHub />
+            Kode sumber di GitHub
+          </a>
+        </div>
       </footer>
     </div>
   )
