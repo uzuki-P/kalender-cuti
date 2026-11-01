@@ -122,7 +122,7 @@ export function YearView({
                       />
                     )}
                     {b && <span aria-hidden className={cn("absolute inset-y-1 bg-merah", joinL ? "-left-px" : "left-0.5 rounded-l-lg", joinR ? "-right-px" : "right-0.5 rounded-r-lg")} />}
-                    {leave && !b && <span aria-hidden className={cn("stabilo absolute inset-y-1", lL ? "-left-px rounded-l-none" : "left-0.5", lR ? "-right-px rounded-r-none" : "right-0.5")} />}
+                    {leave && !b && <span aria-hidden style={sw !== undefined ? { boxShadow: "none" } : undefined} className={cn("stabilo absolute inset-y-1", lL ? "-left-px rounded-l-none" : "left-0.5", lR ? "-right-px rounded-r-none" : "right-0.5")} />}
                     <span
                       className={cn(
                         "relative inline-grid h-6 min-w-6 place-items-center rounded-full px-0.5 transition-transform group-hover:scale-125",

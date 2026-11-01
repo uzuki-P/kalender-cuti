@@ -248,6 +248,8 @@ function MonthGrid({ view, idx, today, selected, month, preview, onPreview, onSe
               {leave && !b && (
                 <span
                   aria-hidden
+                  // the swipe preview already marks this run; its edge would read as a stray shadow
+                  style={sw !== undefined ? { boxShadow: "none" } : undefined}
                   className={cn(
                     "absolute inset-y-2 z-10 transition-transform group-hover:-rotate-1 sm:inset-y-2.5",
                     out ? "rounded-xl bg-stabilo-soft" : "stabilo",
