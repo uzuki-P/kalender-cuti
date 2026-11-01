@@ -76,6 +76,21 @@ body {
   font-feature-settings: "tnum" 1;
 }
 
+/* Tailwind v4 leaves buttons on the default arrow; anything clickable gets a hand */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  a[href],
+  select,
+  summary,
+  label:has(input) {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
 @utility display {
   font-family: var(--font-display);
   font-weight: 800;
