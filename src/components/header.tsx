@@ -56,7 +56,7 @@ export function Header({
             onClick={() => mode !== m && withTransition(() => onModeChange(m))}
             className={cn(
               "h-9 rounded-full px-3 transition-[background-color,color,box-shadow] focus-visible:outline-3 focus-visible:outline-offset-1 focus-visible:outline-ink sm:px-4",
-              mode === m ? "bg-paper text-ink shadow-[0_1px_3px_rgb(0_0_0/0.18)]" : "text-muted hover:text-ink"
+              mode === m ? "bg-ink text-paper" : "text-muted hover:text-ink"
             )}
           >
             {m === "month" ? "Bulan" : <><span className="sm:hidden">Tahun</span><span className="max-sm:hidden">Setahun</span></>}

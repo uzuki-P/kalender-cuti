@@ -98,6 +98,7 @@ export function YearView({
                 const sw = swipe.get(d.iso)
                 const swL = col > 0 && sameMonth(i - 1) && swipe.has(grid[i - 1].iso)
                 const swR = col < 6 && sameMonth(i + 1) && swipe.has(grid[i + 1].iso)
+                const onStabilo = !b && (!!leave || sw !== undefined)
                 return (
                   <button
                     key={d.iso}
@@ -125,9 +126,10 @@ export function YearView({
                     <span
                       className={cn(
                         "relative inline-grid h-6 min-w-6 place-items-center rounded-full px-0.5 transition-transform group-hover:scale-125",
-                        b ? "text-on-merah" : leave ? "text-on-stabilo" : d.dow === 0 && "text-merah-ink",
-                        d.iso === today && (b ? "bg-on-merah !text-merah" : "bg-ink !text-paper"),
-                        "group-focus-visible:outline-3 group-focus-visible:outline-offset-1 group-focus-visible:outline-ink"
+                        b ? "text-on-merah" : onStabilo ? "text-on-stabilo" : d.dow === 0 && "text-merah-ink",
+                        d.iso === today && (b ? "bg-on-merah !text-merah" : onStabilo ? "bg-on-stabilo !text-stabilo" : "bg-ink !text-paper"),
+                        "group-focus-visible:outline-3 group-focus-visible:outline-offset-1",
+                        onStabilo ? "group-focus-visible:outline-on-stabilo" : "group-focus-visible:outline-ink"
                       )}
                     >
                       {d.day}

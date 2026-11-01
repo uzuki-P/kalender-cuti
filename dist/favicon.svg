@@ -1,9 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="16" fill="#904a45"/>
-  <rect x="12" y="15" width="40" height="39" rx="8" fill="#622f2b"/>
-  <rect x="12" y="12" width="40" height="39" rx="8" fill="#fff8f3"/>
-  <path d="M20 12h24a8 8 0 0 1 8 8v5H12v-5a8 8 0 0 1 8-8Z" fill="#ffc9bf"/>
-  <path d="M23 9v9m18-9v9" fill="none" stroke="#452825" stroke-width="5" stroke-linecap="round"/>
-  <path d="M21 33h7m-7 9h7" fill="none" stroke="#baa6a0" stroke-width="4" stroke-linecap="round"/>
-  <circle cx="40" cy="38" r="8" fill="#e34d43"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Kalender Cuti: a calendar sheet whose one week is a break (red block)
+       stretched by leave (yellow highlighter swept behind the whole run).
+       Colours come from src/index.css: merah, stabilo, line, ink. -->
+  <rect width="512" height="512" rx="116" fill="#c44a42"/>
+  <rect x="80" y="112" width="352" height="320" rx="56" fill="#ffffff"/>
+  <!-- binding rings -->
+  <rect x="160" y="74" width="36" height="84" rx="18" fill="#1a1a1f"/>
+  <rect x="316" y="74" width="36" height="84" rx="18" fill="#1a1a1f"/>
+  <!-- quiet days above and below -->
+  <g fill="#e3e2e7">
+    <circle cx="142" cy="380" r="19"/><circle cx="216" cy="380" r="19"/><circle cx="290" cy="380" r="19"/><circle cx="364" cy="380" r="19"/>
+  </g>
+  <!-- highlighter swept behind the whole long weekend: uneven ends, slightly off level -->
+  <path d="M112 206 C113 193 121 186 136 186 L384 180 C402 180 412 190 411 208 L408 306 C407 322 397 330 380 330 L132 334 C118 334 110 326 110 312 Z" fill="#ffd84d"/>
+  <!-- the break -->
+  <rect x="128" y="204" width="200" height="110" rx="26" fill="#c44a42"/>
 </svg>

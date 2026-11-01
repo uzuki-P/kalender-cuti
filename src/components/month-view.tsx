@@ -207,6 +207,9 @@ function MonthGrid({ view, idx, today, selected, month, preview, onPreview, onSe
           const out = d.month !== month
           const isSel = d.iso === selected
           const isToday = d.iso === today
+          // the stroke under the number: out-of-month leave is drawn soft, the swipe preview sits under red blocks
+          const onSoft = !b && !!leave && out
+          const onStabilo = !b && !onSoft && (!!leave || sw !== undefined)
           const status = h ? `, ${holidayLabel(h)}` : b ? ", libur akhir pekan" : leave ? ", saran cuti" : ""
           return (
             <button
@@ -246,10 +249,10 @@ function MonthGrid({ view, idx, today, selected, month, preview, onPreview, onSe
                 <span
                   aria-hidden
                   className={cn(
-                    "stabilo absolute inset-y-2 z-10 transition-transform group-hover:-rotate-1 sm:inset-y-2.5",
+                    "absolute inset-y-2 z-10 transition-transform group-hover:-rotate-1 sm:inset-y-2.5",
+                    out ? "rounded-xl bg-stabilo-soft" : "stabilo",
                     leaveL ? "-left-px rounded-l-none" : "left-1 sm:left-1.5",
-                    leaveR ? "-right-px rounded-r-none" : "right-1 sm:right-1.5",
-                    out && "opacity-60"
+                    leaveR ? "-right-px rounded-r-none" : "right-1 sm:right-1.5"
                   )}
                 />
               )}
@@ -258,11 +261,12 @@ function MonthGrid({ view, idx, today, selected, month, preview, onPreview, onSe
                   className={cn(
                     "grid h-8 min-w-8 place-items-center rounded-full px-1 text-[17px] leading-none sm:text-[24px]",
                     out ? "font-semibold" : "font-extrabold",
-                    b ? (out ? "text-on-merah-soft" : "text-on-merah") : leave ? "text-on-stabilo" : out ? "text-muted" : d.dow === 0 ? "text-merah-ink" : "",
-                    isToday && (b && !out ? "bg-on-merah !text-merah" : "bg-ink !text-paper"),
+                    b ? (out ? "text-on-merah-soft" : "text-on-merah") : onSoft ? "text-on-stabilo-soft" : onStabilo ? "text-on-stabilo" : out ? "text-muted" : d.dow === 0 ? "text-merah-ink" : "",
+                    isToday && (b && !out ? "bg-on-merah !text-merah" : onStabilo ? "bg-on-stabilo !text-stabilo" : "bg-ink !text-paper"),
                     isSel && "ring-3 ring-ink ring-offset-2 ring-offset-paper",
                     isSel && b && !out && "ring-on-merah ring-offset-merah",
-                    "group-focus-visible:outline-3 group-focus-visible:outline-offset-4 group-focus-visible:outline-ink"
+                    "group-focus-visible:outline-3 group-focus-visible:outline-offset-4",
+                    onStabilo ? "group-focus-visible:outline-on-stabilo" : "group-focus-visible:outline-ink"
                   )}
                 >
                   {d.day}
@@ -270,7 +274,7 @@ function MonthGrid({ view, idx, today, selected, month, preview, onPreview, onSe
                 {h && !out && (
                   <span className={cn("line-clamp-3 text-[14px] leading-tight font-bold max-sm:hidden", b ? "text-on-merah" : "text-on-stabilo")}>
                     {h.kind === "cuti" && (
-                      <span className="mb-0.5 block text-[13px] font-semibold opacity-90">{b ? "Cuti bersama" : "Cuti bersama · potong cuti"}</span>
+                      <span className="mb-0.5 block text-[13px] font-semibold">{b ? "Cuti bersama" : "Cuti bersama · potong cuti"}</span>
                     )}
                     {h.name}
                   </span>

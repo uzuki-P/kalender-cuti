@@ -26,7 +26,7 @@ export function CutiSwitch({
         onClick={() => onChange(!on)}
         className={cn(
           "relative mt-0.5 h-7 w-12 shrink-0 rounded-full transition-colors duration-200 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ink sm:mt-0",
-          on ? "bg-ink" : "bg-line"
+          on ? "bg-ink" : "bg-muted"
         )}
       >
         <span
