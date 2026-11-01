@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from "react"
 
+import { CutiSwitch } from "@/components/cuti-switch"
 import { DayPanel } from "@/components/day-panel"
 import { Header } from "@/components/header"
 import { MonthView } from "@/components/month-view"
 import { NextBreak } from "@/components/next-break"
 import { YearView } from "@/components/year-view"
 import { SKB_URL, YEARS } from "@/data/years"
-import { breakIndex, breaksOf } from "@/lib/breaks"
+import { planYear } from "@/lib/breaks"
+import { useCutiIsLeave } from "@/lib/leave-policy"
 import { yearView, type Bridge } from "@/lib/calendar"
 import { useCalendarSelection } from "@/lib/calendar-selection"
 
@@ -18,8 +20,8 @@ import { useCalendarSelection } from "@/lib/calendar-selection"
 export function App({ year }: { year: number }) {
   const calendar = useCalendarSelection(year)
   const view = useMemo(() => yearView(calendar.year), [calendar.year])
-  const breaks = useMemo(() => breaksOf(view), [view])
-  const idx = useMemo(() => breakIndex(breaks), [breaks])
+  const [cutiIsLeave, setCutiIsLeave] = useCutiIsLeave()
+  const { breaks, idx } = useMemo(() => planYear(view, cutiIsLeave), [view, cutiIsLeave])
 
   // the highlighter follows the pointer over a suggestion, else the selection
   const [hovered, setHovered] = useState<Bridge | null>(null)
@@ -44,6 +46,7 @@ export function App({ year }: { year: number }) {
       <main id="kalender" className="scroll-mt-4">
         <h1 className="sr-only">Kalender {calendar.year}: tanggal merah, cuti bersama, dan saran cuti</h1>
         <NextBreak view={view} breaks={breaks} today={calendar.today} onSelect={calendar.selectDate} onYearChange={calendar.selectYear} />
+        <CutiSwitch view={view} on={cutiIsLeave} onChange={setCutiIsLeave} />
         <div className="mx-auto max-w-[1320px] px-3 pt-6 pb-16 sm:px-8 sm:pt-8">
           {calendar.mode === "month" ? (
             <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-10">

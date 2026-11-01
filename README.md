@@ -19,6 +19,8 @@ The 2027 data comes from the
 
 Each page has month and year views, the next day off, details for the selected
 date, each month's breaks, and leave suggestions that join breaks together.
+A switch marks cuti bersama as annual leave for workplaces that deduct it:
+those days then show as leave to take instead of free days off.
 System, light, and dark appearance choices persist in the browser. Motion
 respects the reduced-motion preference.
 

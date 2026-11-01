@@ -160,6 +160,7 @@ function YearTip({ tip, view, idx }: { tip: Tip; view: View; idx: BreakIndex }) 
         <p className="text-[13px] font-semibold opacity-80">{DAY_NAMES[d.dow]} {pasaran(d)}</p>
         <p className="text-[17px] leading-tight font-extrabold">{fmtDm(d)}</p>
         <p className="mt-1 text-[14px] leading-snug font-semibold">{h ? holidayLabel(h) : dayStatus(tip.iso, view, idx)}</p>
+        {h?.kind === "cuti" && idx.cutiIsLeave && <p className="text-[14px] leading-snug opacity-90">Memotong cuti tahunan</p>}
         {b && <p className="mt-1 text-[14px] leading-snug opacity-90">Libur {b.days.length} hari: {rangeText(b.days)}</p>}
         {leave && (
           <p className="mt-2 inline-block rounded-md bg-stabilo px-2 py-0.5 text-[14px] font-bold text-on-stabilo">

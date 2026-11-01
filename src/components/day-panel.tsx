@@ -27,7 +27,7 @@ export function DayPanel({
   const h = view.special.get(selected)
   const b = idx.byIso.get(selected)
   const bridge = idx.leave.get(selected) ?? b?.bridge
-  const off = !!(h || b)
+  const off = !!b || (!!h && !(h.kind === "cuti" && idx.cutiIsLeave))
   const inMonth = breaks.filter((x) => x.days.some((d) => d.month === month))
   const later = breaks.find((x) => x.days[0].month > month)
 

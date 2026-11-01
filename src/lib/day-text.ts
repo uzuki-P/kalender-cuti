@@ -13,6 +13,7 @@ export const rangeText = (days: Day[]) => {
 export function dayStatus(iso: string, view: YearView, idx: BreakIndex) {
   const d = parseIso(iso)
   const h = view.special.get(iso)
+  if (h?.kind === "cuti" && idx.cutiIsLeave) return "Cuti bersama, memotong cuti tahunan"
   if (h) return h.kind === "libur" ? "Libur nasional" : "Cuti bersama"
   if (idx.byIso.has(iso)) return "Akhir pekan, menyambung libur"
   if (idx.leave.has(iso)) return "Hari kerja di antara libur"

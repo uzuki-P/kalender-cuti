@@ -64,7 +64,7 @@ export function MonthView(p: Props) {
       <MonthGrid {...p} step={step} />
       <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-2 px-1 text-[14px] font-semibold text-muted">
         <li className="flex items-center gap-2"><i className="h-4 w-7 rounded-md bg-merah" />Libur, termasuk akhir pekan yang menyambung</li>
-        <li className="flex items-center gap-2"><i className="stabilo h-4 w-7" />Saran cuti</li>
+        <li className="flex items-center gap-2"><i className="stabilo h-4 w-7" />{p.idx.cutiIsLeave ? "Saran cuti & cuti bersama (memakai jatah cuti)" : "Saran cuti"}</li>
         <li className="flex items-center gap-2"><i className="grid size-5 place-items-center rounded-full bg-ink text-[11px] font-bold text-paper not-italic">1</i>Hari ini</li>
       </ul>
     </section>
@@ -268,12 +268,14 @@ function MonthGrid({ view, idx, today, selected, month, preview, onPreview, onSe
                   {d.day}
                 </span>
                 {h && !out && (
-                  <span className="line-clamp-3 text-[14px] leading-tight font-bold text-on-merah max-sm:hidden">
-                    {h.kind === "cuti" && <span className="mb-0.5 block text-[13px] font-semibold opacity-90">Cuti bersama</span>}
+                  <span className={cn("line-clamp-3 text-[14px] leading-tight font-bold max-sm:hidden", b ? "text-on-merah" : "text-on-stabilo")}>
+                    {h.kind === "cuti" && (
+                      <span className="mb-0.5 block text-[13px] font-semibold opacity-90">{b ? "Cuti bersama" : "Cuti bersama · potong cuti"}</span>
+                    )}
                     {h.name}
                   </span>
                 )}
-                {leave && !b && !out && <span className="text-[14px] font-extrabold text-on-stabilo max-sm:hidden">Ambil cuti?</span>}
+                {leave && !b && !h && !out && <span className="text-[14px] font-extrabold text-on-stabilo max-sm:hidden">Ambil cuti?</span>}
               </span>
             </button>
           )
