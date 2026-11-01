@@ -13,7 +13,7 @@ build:
 deploy: build
     vercel --prod
 
-# Check application lint and generated icons
+# Check application types and lint
 check:
+    pnpm exec tsc -b
     pnpm lint
-    pnpm check:icons

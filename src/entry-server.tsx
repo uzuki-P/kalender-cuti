@@ -3,15 +3,10 @@ import { renderToString } from "react-dom/server"
 
 import { App } from "./App"
 import { YEARS, yearPath } from "./data/years"
-import { themeCss } from "./lib/m3e/color"
 import { yearView } from "./lib/calendar"
-import { THEME } from "./theme"
 
 export const years = Object.keys(YEARS).map(Number)
 export { yearPath }
-
-/** the generated color scheme, inlined as <style id="m3-theme"> so the first paint is themed */
-export const themeStyle = themeCss(THEME)
 
 export function render(year: number) {
   const { nLibur, nCuti } = yearView(year)

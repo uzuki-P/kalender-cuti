@@ -8,7 +8,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..")
 const dist = join(root, "dist")
 const ssr = join(root, "dist-ssr")
 
-const { render, years, yearPath, themeStyle } = await import(
+const { render, years, yearPath } = await import(
   pathToFileURL(join(ssr, "entry-server.js")).href
 )
 const template = readFileSync(join(dist, "index.html"), "utf8")
@@ -19,7 +19,6 @@ for (const year of years) {
   const page = template
     .replaceAll("<!--title-->", esc(title))
     .replaceAll("<!--description-->", esc(description))
-    .replace("<!--theme-style-->", `<style id="m3-theme">${themeStyle}</style>`)
     .replace("<!--year-->", String(year))
     .replace("<!--app-->", html)
   const paths = new Set([`/${year}/`, yearPath(year)])

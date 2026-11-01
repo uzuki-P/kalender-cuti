@@ -15,6 +15,4 @@ export default defineConfig({
   resolve: {
     alias: { "@": path.resolve(import.meta.dirname, "./src") },
   },
-  // its ESM uses extensionless imports that Node cannot resolve: bundle it
-  ssr: { noExternal: ["@material/material-color-utilities"] },
 })
