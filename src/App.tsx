@@ -46,10 +46,8 @@ export function App({ year }: { year: number }) {
         Langsung ke kalender
       </a>
       <Header
-        year={calendar.year}
         today={calendar.today}
         mode={calendar.mode}
-        onYearChange={calendar.selectYear}
         onModeChange={calendar.selectMode}
       />
       <main id="kalender" className="scroll-mt-4">
@@ -90,6 +88,7 @@ export function App({ year }: { year: number }) {
                 onPreview={setHovered}
                 onSelect={calendar.selectDate}
                 onMonthChange={calendar.selectMonth}
+                onYearChange={calendar.selectYear}
               />
               <div className="lg:pt-[118px]">
                 <DayPanel
@@ -111,6 +110,7 @@ export function App({ year }: { year: number }) {
               month={calendar.month}
               onSelect={calendar.selectDate}
               onMonthChange={calendar.selectMonth}
+              onYearChange={calendar.selectYear}
             />
           )}
           <LongestLeave view={view} idx={idx} today={calendar.today} onSelect={calendar.selectDate} onPreview={setHovered} />

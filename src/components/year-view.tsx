@@ -8,6 +8,8 @@ import { SHEET, withTransition } from "@/lib/transition"
 
 import { dayStatus, rangeText } from "@/lib/day-text"
 
+import { YearMenu } from "./year-menu"
+
 type Tip = { iso: string; x: number; y: number; below: boolean }
 
 /**
@@ -22,6 +24,7 @@ export function YearView({
   month,
   onSelect,
   onMonthChange,
+  onYearChange,
 }: {
   view: View
   idx: BreakIndex
@@ -29,6 +32,7 @@ export function YearView({
   month: number
   onSelect: (iso: string) => void
   onMonthChange: (m: number) => void
+  onYearChange: (year: number) => void
 }) {
   const [tip, setTip] = useState<Tip | null>(null)
   // hovering a suggested leave day sweeps the highlighter across its long weekend
@@ -62,6 +66,10 @@ export function YearView({
   }
 
   return (
+    <>
+    <h2 className="display mb-6 px-1 text-[48px] leading-[0.9] sm:mb-8 sm:text-[88px]">
+      Setahun <YearMenu year={view.year} onYearChange={onYearChange} />
+    </h2>
     <section aria-label={`Kalender setahun ${view.year}`} className="grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-10 sm:gap-y-10 lg:grid-cols-3">
       {MONTH_NAMES.map((name, m) => {
         const grid = monthGrid(view.year, m)
@@ -143,6 +151,7 @@ export function YearView({
       })}
       {tip && <YearTip tip={tip} view={view} idx={idx} />}
     </section>
+    </>
   )
 }
 

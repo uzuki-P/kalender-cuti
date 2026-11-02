@@ -11,7 +11,8 @@
  *   stabilo  leave you could take, like a highlighter on a paper calendar.
  * Every text pair meets WCAG AA (4.5:1); blocks keep 3:1 against the page.
  * Dark mode sits on true black. A pale highlighter cannot reach 3:1 on white,
- * so in light mode the stabilo stroke gets a darker bottom edge that does.
+ * so the stabilo stroke gets a darker bottom edge that does. In dark mode the
+ * edge is darker than the yellow, so it still shows on the block itself.
  * Text on a stabilo block is always on-stabilo, whatever weekday it is.
  *
  *                       light            dark
@@ -20,7 +21,7 @@
  *   muted on paper      #6e6d78  5.10    #a9a7b2  8.86
  *   muted on panel      #6e6d78  4.65    #a9a7b2  7.80
  *   stabilo / ink       #ffd84d 12.53    #e9c649 12.64
- *   stabilo edge/paper  #a37a00  3.93    (= stabilo)
+ *   stabilo edge/paper  #a37a00  3.93    #8a6600  3.98 (3.17 vs stabilo)
  *   merah-soft / ink    #f6d5d2  6.09    #4a2422  7.90
  *   stabilo-soft / ink  #fff1bd  7.63    #3d3312  8.40
  */
@@ -55,7 +56,7 @@
   --on-merah-soft: #ffb4ad;
   --stabilo: #e9c649;
   --on-stabilo: #000000;
-  --stabilo-edge: #e9c649;
+  --stabilo-edge: #8a6600;
   --stabilo-soft: #3d3312;
   --on-stabilo-soft: #f0d266;
   color-scheme: dark;

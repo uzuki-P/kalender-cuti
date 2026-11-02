@@ -7,6 +7,7 @@ import { cn } from "@/lib/cn"
 import { SHEET } from "@/lib/transition"
 
 import { ChevronLeft, ChevronRight } from "./icons"
+import { YearMenu } from "./year-menu"
 
 const MONTH_ABBR = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
 const ring = "focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ink"
@@ -23,6 +24,7 @@ type Props = {
   onPreview: (b: Bridge | null) => void
   onSelect: (iso: string) => void
   onMonthChange: (month: number) => void
+  onYearChange: (year: number) => void
 }
 
 export function MonthView(p: Props) {
@@ -41,11 +43,10 @@ export function MonthView(p: Props) {
   }
 
   return (
-    <section aria-labelledby="month-title">
-      <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3 px-1">
-        <h2 id="month-title" aria-live="polite" className="display text-[48px] leading-[0.9] sm:text-[88px]">
-          {MONTH_NAMES[month]} <span className="text-merah-ink">{view.year}</span>
-        </h2>
+    <section aria-labelledby="month-title" className="@container">
+      {/* narrow columns give the controls their own row; wide ones keep them beside the title */}
+      <div className="grid grid-cols-[minmax(0,1fr)] items-end gap-x-6 gap-y-3 px-1 @min-[520px]:grid-cols-[minmax(0,1fr)_auto]">
+        <MonthTitle month={month} year={view.year} onYearChange={p.onYearChange} />
         <div className="flex gap-2 pb-1 sm:pb-2">
           <button type="button" aria-label="Bulan sebelumnya" disabled={!canStep(-1)} onClick={() => step(-1)} className={cn("grid size-12 place-items-center rounded-full border-2 border-ink transition-colors hover:bg-ink hover:text-paper active:scale-95 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-ink", ring)}>
             <ChevronLeft />
@@ -68,6 +69,42 @@ export function MonthView(p: Props) {
         <li className="flex items-center gap-2"><i className="grid size-5 place-items-center rounded-full bg-ink text-[11px] font-bold text-paper not-italic">1</i>Hari ini</li>
       </ul>
     </section>
+  )
+}
+
+/**
+ * The month and year on one line. Long names such as September shrink the
+ * type to fit the column instead of pushing the controls onto a new row;
+ * the title keeps its full-size height so the calendar below never moves.
+ */
+function MonthTitle({ month, year, onYearChange }: { month: number; year: number; onYearChange: (y: number) => void }) {
+  const titleRef = useRef<HTMLHeadingElement>(null)
+  const lineRef = useRef<HTMLSpanElement>(null)
+
+  useLayoutEffect(() => {
+    const title = titleRef.current
+    const line = lineRef.current
+    if (!title || !line) return
+    const fit = () => {
+      title.style.fontSize = ""
+      const max = parseFloat(getComputedStyle(title).fontSize)
+      const room = title.clientWidth
+      const need = line.offsetWidth
+      if (need > room) title.style.fontSize = `${Math.floor((max * room) / need)}px`
+    }
+    fit()
+    void document.fonts?.ready.then(fit)
+    const ro = new ResizeObserver(fit)
+    ro.observe(title)
+    return () => ro.disconnect()
+  }, [month, year])
+
+  return (
+    <h2 ref={titleRef} id="month-title" className="display flex min-h-[43.2px] min-w-0 items-end text-[48px] leading-[0.9] whitespace-nowrap sm:min-h-[79.2px] sm:text-[88px]">
+      <span ref={lineRef} className="inline-block">
+        <span aria-live="polite">{MONTH_NAMES[month]}</span> <YearMenu year={year} onYearChange={onYearChange} />
+      </span>
+    </h2>
   )
 }
 
