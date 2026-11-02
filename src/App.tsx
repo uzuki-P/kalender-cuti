@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from "react"
 
-import { CutiSwitch } from "@/components/cuti-switch"
 import { DayPanel } from "@/components/day-panel"
 import { Header } from "@/components/header"
 import { MonthView } from "@/components/month-view"
 import { NextBreak } from "@/components/next-break"
+import { PolicySwitch } from "@/components/policy-switch"
 import { YearView } from "@/components/year-view"
 import { SKB_URL, YEARS } from "@/data/years"
-import { planYear } from "@/lib/breaks"
-import { useCutiIsLeave } from "@/lib/leave-policy"
+import { BLOCK_DAYS, planYear } from "@/lib/breaks"
+import { useBlockLeave, useCutiIsLeave } from "@/lib/leave-policy"
 import { yearView, type Bridge } from "@/lib/calendar"
 import { useCalendarSelection } from "@/lib/calendar-selection"
 import { ArrowUpRight, GitHub } from "@/components/icons"
@@ -25,7 +25,11 @@ export function App({ year }: { year: number }) {
   const calendar = useCalendarSelection(year)
   const view = useMemo(() => yearView(calendar.year), [calendar.year])
   const [cutiIsLeave, setCutiIsLeave] = useCutiIsLeave()
-  const { breaks, idx } = useMemo(() => planYear(view, cutiIsLeave), [view, cutiIsLeave])
+  const [blockLeave, setBlockLeave] = useBlockLeave()
+  const { breaks, idx } = useMemo(
+    () => planYear(view, { cutiIsLeave, blockLeave }),
+    [view, cutiIsLeave, blockLeave]
+  )
 
   // the highlighter follows the pointer over a suggestion, else the selection
   const [hovered, setHovered] = useState<Bridge | null>(null)
@@ -50,7 +54,28 @@ export function App({ year }: { year: number }) {
       <main id="kalender" className="scroll-mt-4">
         <h1 className="sr-only">Kalender {calendar.year}: tanggal merah, cuti bersama, dan saran cuti</h1>
         <NextBreak view={view} breaks={breaks} today={calendar.today} onSelect={calendar.selectDate} onYearChange={calendar.selectYear} />
-        <CutiSwitch view={view} on={cutiIsLeave} onChange={setCutiIsLeave} />
+        <div className="mx-auto flex max-w-[1320px] flex-col gap-3 px-3 pt-4 sm:px-8">
+          <PolicySwitch
+            label="Cuti bersama memotong cuti tahunan"
+            hint={
+              cutiIsLeave
+                ? `${view.nCuti} hari cuti bersama ${view.year} ditandai stabilo, karena memakai jatah cutimu.`
+                : "nyalakan jika kantormu menghitungnya sebagai cuti."
+            }
+            on={cutiIsLeave}
+            onChange={setCutiIsLeave}
+          />
+          <PolicySwitch
+            label={`Cuti wajib (block leave) ${BLOCK_DAYS} hari kerja`}
+            hint={
+              blockLeave
+                ? `saran cuti menjadi ${BLOCK_DAYS} hari kerja berturut-turut yang menyambung tanggal merah, agar liburmu paling panjang.`
+                : `nyalakan jika kantormu mewajibkan cuti ${BLOCK_DAYS} hari kerja berturut-turut.`
+            }
+            on={blockLeave}
+            onChange={setBlockLeave}
+          />
+        </div>
         <div className="mx-auto max-w-[1320px] px-3 pt-6 pb-16 sm:px-8 sm:pt-8">
           {calendar.mode === "month" ? (
             <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-10">

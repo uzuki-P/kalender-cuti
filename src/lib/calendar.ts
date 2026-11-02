@@ -150,6 +150,10 @@ export const toIso = (d: Date) =>
 
 export const KIND_LABEL = { libur: "Libur nasional", cuti: "Cuti bersama" } as const
 
-/** "Jumat, 15 Mei" or "Senin, 4 Mei & Selasa, 5 Mei" */
-export const leaveDates = (b: Bridge) =>
-  b.leave.map((d) => `${DAY_NAMES[d.dow]}, ${fmtDm(d)}`).join(" & ")
+/** "Jumat, 15 Mei", "Senin, 4 Mei & Selasa, 5 Mei" or "5 hari kerja, Senin, 4 Mei – Jumat, 8 Mei" */
+export const leaveDates = (b: Bridge) => {
+  const fmt = (d: Day) => `${DAY_NAMES[d.dow]}, ${fmtDm(d)}`
+  return b.leave.length > 2
+    ? `${b.leave.length} hari kerja, ${fmt(b.leave[0])} – ${fmt(b.leave[b.leave.length - 1])}`
+    : b.leave.map(fmt).join(" & ")
+}

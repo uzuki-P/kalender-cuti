@@ -16,6 +16,6 @@ export function dayStatus(iso: string, view: YearView, idx: BreakIndex) {
   if (h?.kind === "cuti" && idx.cutiIsLeave) return "Cuti bersama, memotong cuti tahunan"
   if (h) return h.kind === "libur" ? "Libur nasional" : "Cuti bersama"
   if (idx.byIso.has(iso)) return "Akhir pekan, menyambung libur"
-  if (idx.leave.has(iso)) return "Hari kerja di antara libur"
+  if (idx.leave.has(iso)) return idx.blockLeave ? "Hari kerja, saran cuti wajib" : "Hari kerja di antara libur"
   return d.dow === 0 || d.dow === 6 ? "Akhir pekan" : "Hari kerja"
 }

@@ -1,19 +1,10 @@
 import { useCallback, useSyncExternalStore } from "react"
 
-/**
- * Whether the visitor's workplace deducts cuti bersama from annual leave.
- * Stored per browser; the prerendered page assumes cuti bersama is free.
+/*
+ * The visitor's workplace leave rules, stored per browser. The prerendered
+ * page assumes neither rule applies.
  */
-const KEY = "cuti-bersama"
 const EVENT = "leave-policy-change"
-
-function read() {
-  try {
-    return localStorage.getItem(KEY) === "potong-cuti"
-  } catch {
-    return false
-  }
-}
 
 function subscribe(cb: () => void) {
   window.addEventListener(EVENT, cb)
@@ -24,16 +15,32 @@ function subscribe(cb: () => void) {
   }
 }
 
-export function useCutiIsLeave() {
-  const cutiIsLeave = useSyncExternalStore(subscribe, read, () => false)
-  const setCutiIsLeave = useCallback((on: boolean) => {
+function usePolicyFlag(key: string, value: string) {
+  const read = useCallback(() => {
     try {
-      if (on) localStorage.setItem(KEY, "potong-cuti")
-      else localStorage.removeItem(KEY)
+      return localStorage.getItem(key) === value
     } catch {
-      /* private mode: the choice lasts for this page only */
+      return false
     }
-    window.dispatchEvent(new Event(EVENT))
-  }, [])
-  return [cutiIsLeave, setCutiIsLeave] as const
+  }, [key, value])
+  const on = useSyncExternalStore(subscribe, read, () => false)
+  const set = useCallback(
+    (next: boolean) => {
+      try {
+        if (next) localStorage.setItem(key, value)
+        else localStorage.removeItem(key)
+      } catch {
+        /* private mode: the choice lasts for this page only */
+      }
+      window.dispatchEvent(new Event(EVENT))
+    },
+    [key, value]
+  )
+  return [on, set] as const
 }
+
+/** Whether the workplace deducts cuti bersama from annual leave. */
+export const useCutiIsLeave = () => usePolicyFlag("cuti-bersama", "potong-cuti")
+
+/** Whether the workplace requires a block leave (cuti wajib) of 5 consecutive workdays. */
+export const useBlockLeave = () => usePolicyFlag("cuti-wajib", "blok-5")

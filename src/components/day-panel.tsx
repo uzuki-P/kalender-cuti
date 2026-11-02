@@ -90,7 +90,7 @@ export function DayPanel({
                     onClick={() => onSelect(x.bridge!.leave[0].iso)}
                     className={cn("stabilo self-start px-3 py-2 text-left text-[15px] font-bold transition-transform hover:-rotate-1 active:scale-95", ring)}
                   >
-                    + cuti {x.bridge.leave.map((d) => DAY_NAMES[d.dow]).join(" & ")} = {x.bridge.run.length} hari libur
+                    + cuti {x.bridge.leave.length > 2 ? `${x.bridge.leave.length} hari kerja` : x.bridge.leave.map((d) => DAY_NAMES[d.dow]).join(" & ")} = {x.bridge.run.length} hari libur
                   </button>
                 )}
               </li>

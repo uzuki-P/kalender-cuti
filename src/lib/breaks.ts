@@ -50,8 +50,15 @@ export type Break = {
  * `cutiIsLeave` is for workplaces that deduct cuti bersama from annual
  * leave: those days stop being free days off and become leave the visitor
  * takes, offered like any other suggestion together with the break they make.
+ *
+ * `blockLeave` is for workplaces that require a block leave (cuti wajib) of
+ * 5 consecutive workdays: each break is offered the 5-workday block next to
+ * it that makes the longest break, instead of the hari kejepit.
  */
-export function planYear(view: YearView, cutiIsLeave = false): { breaks: Break[]; idx: BreakIndex } {
+export function planYear(
+  view: YearView,
+  { cutiIsLeave = false, blockLeave = false } = {}
+): { breaks: Break[]; idx: BreakIndex } {
   const special = cutiIsLeave
     ? new Map([...view.special].filter(([, h]) => h.kind === "libur"))
     : view.special
@@ -95,15 +102,57 @@ export function planYear(view: YearView, cutiIsLeave = false): { breaks: Break[]
   const gain = (b: Bridge) => b.run.length / b.leave.length
   const squeezed = bridges(free).filter((b) => !b.leave.some((d) => isCuti(d.iso)))
   const touches = (br: Bridge, b: Break) => br.run.some((d) => d.iso === b.start || d.iso === b.end)
-  for (const b of breaks) {
-    b.bridge =
-      cutiBridges.find((br) => touches(br, b)) ??
-      squeezed.filter((br) => touches(br, b)).sort((x, y) => gain(y) - gain(x))[0]
+  const overlaps = (x: Bridge, y: Bridge) => x.leave.some((d) => y.leave.some((e) => e.iso === d.iso))
+
+  let extra = cutiBridges
+  if (blockLeave) {
+    // one block per break, reused by the breaks it reaches; blocks never share a leave day
+    const blocks = blockBridges(view.year, off)
+    const chosen: Bridge[] = []
+    for (const b of breaks) {
+      b.bridge =
+        chosen.find((br) => touches(br, b)) ??
+        blocks
+          .filter((br) => touches(br, b) && !chosen.some((c) => overlaps(c, br)))
+          .sort((x, y) => y.run.length - x.run.length)[0]
+      if (b.bridge && !chosen.includes(b.bridge)) chosen.push(b.bridge)
+    }
+    extra = cutiBridges.filter((cb) => !chosen.some((c) => overlaps(c, cb)))
+  } else {
+    for (const b of breaks) {
+      b.bridge =
+        cutiBridges.find((br) => touches(br, b)) ??
+        squeezed.filter((br) => touches(br, b)).sort((x, y) => gain(y) - gain(x))[0]
+    }
   }
 
-  const idx = breakIndex(breaks, cutiBridges)
+  const idx = breakIndex(breaks, extra)
   idx.cutiIsLeave = cutiIsLeave
+  idx.blockLeave = blockLeave
   return { breaks, idx }
+}
+
+/** workdays in one block leave (cuti wajib) */
+export const BLOCK_DAYS = 5
+
+/**
+ * Every run of 5 consecutive workdays in the year, each with the break it
+ * makes: days off between the leave days count toward neither the block nor
+ * its length in leave, and days off on either side extend the break.
+ */
+function blockBridges(year: number, off: (d: Day) => boolean): Bridge[] {
+  const days: Day[] = []
+  for (let d = parseIso(`${year}-01-01`); d.date.getUTCFullYear() === year; d = addDays(d, 1)) days.push(d)
+  const work = days.flatMap((d, i) => (off(d) ? [] : [i]))
+  const out: Bridge[] = []
+  for (let i = 0; i + BLOCK_DAYS <= work.length; i++) {
+    let a = work[i]
+    let z = work[i + BLOCK_DAYS - 1]
+    while (a > 0 && off(days[a - 1])) a--
+    while (z < days.length - 1 && off(days[z + 1])) z++
+    out.push({ leave: work.slice(i, i + BLOCK_DAYS).map((j) => days[j]), run: days.slice(a, z + 1) })
+  }
+  return out
 }
 
 export const breakNames = (b: Break) => [...new Set(b.holidays.map((h) => h.name))]
@@ -115,6 +164,8 @@ export type BreakIndex = {
   leave: Map<string, Bridge>
   /** cuti bersama is taken from annual leave rather than given free */
   cutiIsLeave: boolean
+  /** suggestions are 5-workday block leaves (cuti wajib) */
+  blockLeave: boolean
 }
 
 export function breakIndex(breaks: Break[], extra: Bridge[] = []): BreakIndex {
@@ -125,5 +176,5 @@ export function breakIndex(breaks: Break[], extra: Bridge[] = []): BreakIndex {
     for (const d of b.bridge?.leave ?? []) leave.set(d.iso, b.bridge!)
   }
   for (const br of extra) for (const d of br.leave) leave.set(d.iso, br)
-  return { byIso, leave, cutiIsLeave: false }
+  return { byIso, leave, cutiIsLeave: false, blockLeave: false }
 }

@@ -64,7 +64,7 @@ export function MonthView(p: Props) {
       <MonthGrid {...p} step={step} />
       <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-2 px-1 text-[14px] font-semibold text-muted">
         <li className="flex items-center gap-2"><i className="h-4 w-7 rounded-md bg-merah" />Libur, termasuk akhir pekan yang menyambung</li>
-        <li className="flex items-center gap-2"><i className="stabilo h-4 w-7" />{p.idx.cutiIsLeave ? "Saran cuti & cuti bersama (memakai jatah cuti)" : "Saran cuti"}</li>
+        <li className="flex items-center gap-2"><i className="stabilo h-4 w-7" />{p.idx.blockLeave ? "Saran cuti wajib (5 hari kerja)" : "Saran cuti"}{p.idx.cutiIsLeave && " & cuti bersama (memakai jatah cuti)"}</li>
         <li className="flex items-center gap-2"><i className="grid size-5 place-items-center rounded-full bg-ink text-[11px] font-bold text-paper not-italic">1</i>Hari ini</li>
       </ul>
     </section>
