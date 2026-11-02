@@ -178,3 +178,12 @@ export function breakIndex(breaks: Break[], extra: Bridge[] = []): BreakIndex {
   for (const br of extra) for (const d of br.leave) leave.set(d.iso, br)
   return { byIso, leave, cutiIsLeave: false, blockLeave: false }
 }
+
+/** every leave suggestion, longest break first; fewer leave days, then the earlier date, break ties */
+export const longestLeaves = (idx: BreakIndex) =>
+  [...new Set(idx.leave.values())].sort(
+    (x, y) =>
+      y.run.length - x.run.length ||
+      x.leave.length - y.leave.length ||
+      x.run[0].iso.localeCompare(y.run[0].iso)
+  )

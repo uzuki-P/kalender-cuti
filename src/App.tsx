@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react"
 import { DayPanel } from "@/components/day-panel"
 import { Header } from "@/components/header"
 import { MonthView } from "@/components/month-view"
+import { LongestLeave } from "@/components/longest-leave"
 import { NextBreak } from "@/components/next-break"
 import { PolicySwitch } from "@/components/policy-switch"
 import { YearView } from "@/components/year-view"
@@ -112,6 +113,7 @@ export function App({ year }: { year: number }) {
               onMonthChange={calendar.selectMonth}
             />
           )}
+          <LongestLeave view={view} idx={idx} today={calendar.today} onSelect={calendar.selectDate} onPreview={setHovered} />
         </div>
       </main>
       <footer className="mx-auto max-w-[1320px] border-t border-line px-3 py-8 text-[14px] leading-relaxed text-muted sm:px-8">

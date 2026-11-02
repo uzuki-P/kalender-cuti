@@ -25,6 +25,9 @@ A second switch is for workplaces with a block leave (cuti wajib) of 5
 consecutive workdays: each break is then offered the 5-workday block next to
 it that makes the longest break, with red dates and weekends in between
 costing no leave.
+Below the calendar, "Cuti paling panjang" ranks the leave suggestions that
+make the longest breaks, following both switches; past ones are drawn as an
+outline rather than faded, so every card keeps WCAG AA contrast.
 System, light, and dark appearance choices persist in the browser. Motion
 respects the reduced-motion preference.
 
