@@ -70,14 +70,20 @@ export function resolveSelection(
   return { year, month, date: dateInMonth(year, month, Number(today.slice(8))) }
 }
 
-function commitNavigation(url: URL) {
+function commitNavigation(url: URL, replace = false) {
   const next = `${url.pathname}${url.search}${url.hash}`
   if (next === `${window.location.pathname}${window.location.search}${window.location.hash}`) return
-  window.history.pushState(null, "", next)
+  // month and year changes replace the entry so they stay out of browser history
+  if (replace) window.history.replaceState(null, "", next)
+  else window.history.pushState(null, "", next)
   window.dispatchEvent(new Event(CHANGE_EVENT))
 }
 
-function navigate(year: number, values: { month?: string; date?: string; view?: "month" | "year" }) {
+function navigate(
+  year: number,
+  values: { month?: string; date?: string; view?: "month" | "year" },
+  replace = false
+) {
   const url = new URL(window.location.href)
   url.pathname = yearPath(year)
   url.hash = "kalender"
@@ -87,7 +93,7 @@ function navigate(year: number, values: { month?: string; date?: string; view?: 
   if (values.date) url.searchParams.set("date", values.date)
   if (values.view === "year") url.searchParams.set("view", "year")
   if (values.view === "month") url.searchParams.delete("view")
-  commitNavigation(url)
+  commitNavigation(url, replace)
 }
 
 export function useCalendarSelection(serverYear: number) {
@@ -113,12 +119,12 @@ export function useCalendarSelection(serverYear: number) {
     navigate(selection.year, {
       month: `${selection.year}-${String(month + 1).padStart(2, "0")}`,
       view: "month"
-    })
+    }, true)
   const selectYear = (year: number) => {
     if (!(year in YEARS)) return
     // the current year opens on today; any other year on 1 January
     const date = today?.startsWith(`${year}-`) ? today : `${year}-01-01`
-    navigate(year, { date, month: date.slice(0, 7) })
+    navigate(year, { date, month: date.slice(0, 7) }, true)
   }
   return {
     ...selection,
